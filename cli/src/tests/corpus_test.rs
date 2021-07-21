@@ -229,7 +229,9 @@ fn test_feature_corpus_files() {
 
             eprintln!("test language: {:?}", language_name);
 
-            let expected_message = fs::read_to_string(&error_message_path).unwrap();
+            // Also normalize the line endings to \n
+            let expected_message = fs::read_to_string(&error_message_path)
+                .unwrap().replace("\r\n", "\n");
             if let Err(e) = generate_result {
                 if e.to_string() != expected_message {
                     eprintln!(
@@ -395,7 +397,10 @@ fn flatten_tests(test: TestEntry) -> Vec<(String, Vec<u8>, String, bool)> {
                         return;
                     }
                 }
-                result.push((name, input, output, has_fields));
+                let input_str = std::str::from_utf8(input.as_slice()).unwrap();
+                result.push((name.clone() + " - LF", input.clone(), output.clone(), has_fields));
+                let input_crlf = Vec::from(input_str.replace("\n", "\r\n").as_bytes());
+                result.push((name.clone() + " - CRLF", input_crlf, output.clone(), has_fields));
             }
             TestEntry::Group {
                 mut name, children, ..

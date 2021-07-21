@@ -16,11 +16,13 @@ use tree_sitter::{Language, LogType, Parser, Query};
 use walkdir::WalkDir;
 
 lazy_static! {
-    static ref HEADER_REGEX: ByteRegex = ByteRegexBuilder::new(r"^===+\r?\n([^=]*)\r?\n===+\r?\n")
+    // Since parse_test_content() normalizes the line endings, it's not necessary to account for \r\n in these regexes
+    // If you're using these somewhere else, you may need to add them back
+    static ref HEADER_REGEX: ByteRegex = ByteRegexBuilder::new(r"^===+\n([^=]*)\n===+\n")
         .multi_line(true)
         .build()
         .unwrap();
-    static ref DIVIDER_REGEX: ByteRegex = ByteRegexBuilder::new(r"^---+\r?\n")
+    static ref DIVIDER_REGEX: ByteRegex = ByteRegexBuilder::new(r"^---+\n")
         .multi_line(true)
         .build()
         .unwrap();
@@ -370,8 +372,12 @@ pub fn strip_sexp_fields(sexp: String) -> String {
 }
 
 fn parse_test_content(name: String, content: String, file_path: Option<PathBuf>) -> TestEntry {
+    // Normalize line ending. Some languages do not treat \r as a line break so we don't normalize those here
+    let normalized_content = content.replace("\r\n", "\n");
+    std::mem::drop(content);
+
     let mut children = Vec::new();
-    let bytes = content.as_bytes();
+    let bytes = normalized_content.as_bytes();
     let mut prev_name = String::new();
     let mut prev_header_end = 0;
 
