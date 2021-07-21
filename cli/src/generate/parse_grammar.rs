@@ -118,7 +118,10 @@ pub(crate) fn parse_grammar(input: &str) -> Result<InputGrammar> {
         precedence_orderings.push(ordering);
     }
 
-    let extra_symbols = grammar_json.extras.into_iter().map(parse_rule).collect();
+    let extra_symbols = grammar_json.extras.into_iter()
+                                           .map(parse_rule)
+                                           .filter(|rule| !Rule::is_empty_string(rule))
+                                           .collect();
     let external_tokens = grammar_json.externals.into_iter().map(parse_rule).collect();
 
     Ok(InputGrammar {

@@ -147,6 +147,15 @@ impl Rule {
     pub fn seq(rules: Vec<Rule>) -> Self {
         Rule::Seq(rules)
     }
+
+    pub fn is_empty_string(rule: &Rule) -> bool {
+        return match rule {
+            Rule::String(value) => {
+                return value == ""
+            }
+            _ => false
+        }
+    }
 }
 
 impl Alias {
