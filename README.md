@@ -11,6 +11,14 @@ Tree-sitter is a parser generator tool and an incremental parsing library. It ca
 - **Robust** enough to provide useful results even in the presence of syntax errors
 - **Dependency-free** so that the runtime library (which is written in pure C) can be embedded in any application
 
+## Editors
+
+The following editors are making use of tree-sitter for syntax highlighting and other features.
+
+- [Atom](https://atom.io) uses a system based on an older version of tree-sitter.
+- [emacs-tree-sitter](https://github.com/ubolonton/emacs-tree-sitter) is a binding/package for Emacs 25.1.
+- [Neovim](https://neovim.io/doc/treesitter) has experimental support (to be released with v0.5).
+
 ## Links
 
 - [Documentation](https://tree-sitter.github.io)
